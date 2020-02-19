@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:keepScreenOn="true"
+    android:descendantFocusability="beforeDescendants">
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:padding="12dp"
+        android:text="VIT Robocon 2019"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="25sp" />
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/description"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:text="MODE"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+    <TextView
+        android:id="@+id/textViewCommand"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/textView3"
+        android:text="DIRECTION"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/direction"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/mode"
+        android:layout_alignBottom="@+id/mode"
+        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/mode"
+        android:text="BACKWARD"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="25dp" />
+    <TextView
+        android:id="@+id/mode"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView3"
+        android:layout_marginLeft="20dp"
+        android:text="MANUAL"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView21"
+        android:layout_alignRight="@+id/textView21"
+        android:layout_below="@+id/btnpressdisp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="26dp"
+        android:background="@android:color/holo_red_dark"
+        android:text="STOP"
+        android:textColor="@android:color/background_light"
+        android:textSize="20sp" />
+
+
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="155dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewCommand"
+        android:layout_alignBottom="@+id/textViewCommand"
+        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/textViewCommand"
+        android:text="SHAGAI"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/gerege"
+        android:layout_width="155dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView8"
+        android:layout_below="@+id/textView5"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/btnpressdisp"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/mode"
+        android:layout_centerVertical="true"
+        android:text="A"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/gerege"
+        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/textView5"
+        android:text="GEREGE"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnpressdisp"
+        android:layout_marginTop="18dp"
+        android:layout_toEndOf="@+id/mode"
+        android:text="TIMER:"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="60sp" />
+
+    <TextView
+        android:id="@+id/TVMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView7"
+        android:layout_marginStart="19dp"
+        android:layout_toEndOf="@+id/textView7"
+        android:text="03"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="60sp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/TVMin"
+        android:layout_toEndOf="@+id/TVMin"
+        android:text=":"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="60sp" />
+
+    <TextView
+        android:id="@+id/TVSec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView14"
+        android:layout_toEndOf="@+id/textView14"
+        android:text="00"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="60sp" />
+
+    <Button
+        android:id="@+id/timeres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_alignEnd="@id/mode"
+        android:text="TIMER RESET"
+        android:textColor="@android:color/holo_red_dark"
+        android:background="@android:color/background_light"/>
+
+    <Button
+        android:id="@+id/rescue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reconnect"
+
+        android:layout_alignStart="@+id/gerege"
+        android:text="rescue"
+        android:textColor="@android:color/holo_red_dark"
+        android:background="@android:color/background_light"/>
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="11dp"
+        android:text="TRF Robosoft"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/textViewBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:text="BT Status"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewADDR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/description"
+        android:layout_alignStart="@+id/textView8"
+        android:text="MAC Adress"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/reconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/timeres"
+        android:layout_alignBottom="@+id/timeres"
+        android:layout_centerHorizontal="true"
+        android:text="RECONNECT"
+        android:background="@android:color/background_light"
+        android:textColor="@android:color/holo_red_dark"/>
+
+    <TextView
+        android:id="@+id/textviewUSB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView21"
+        android:layout_alignStart="@+id/textViewBT"
+        android:text="USB Status"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light" />
+
+    <TextView
+        android:id="@+id/s"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/g"
+        android:layout_alignBottom="@+id/g"
+        android:layout_alignStart="@+id/textView5"
+        android:text="p=0"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/g"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView8"
+        android:layout_toEndOf="@+id/s"
+        android:text="g=0"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:layout_above="@id/btnpressdisp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="13dp"
+        android:text="COMMAND"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light" />
+
+
+</RelativeLayout>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Robocon_Controller</string>
+    <string name="game_controller_input_description">ROBOCON Manual Controller</string>
+</resources>
