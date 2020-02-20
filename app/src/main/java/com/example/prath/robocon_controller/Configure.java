@@ -11,8 +11,10 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Configure extends AppCompatActivity {
@@ -34,24 +38,34 @@ public class Configure extends AppCompatActivity {
     String TAG = "Configure";
     int usbcount;
     String usb_val;
-    TextView USB_STAT;
+    ArrayList<TextView> parameters = new ArrayList<>();
+    InputStream mmInStream = null;
+    TextView  A_Parameter,B_Parameter,C_Parameter,ID;
     private ProgressDialog progress;
     private boolean isBtConnected = false;
     public double Y=0.0, Z=0.0;
     final static UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static final String ACTION_USB_ATTACHED = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
     private static final String ACTION_USB_DETACHED = "android.hardware.usb.action.USB_DEVICE_DETACHED";
-    public int Hcount=0;
-    public int Lcount=0;
-    public int county=0;
-    public int countz=0;
+    public int Hcount=0, Lcount=0, county=0, countz=0, par_loc = 0, id = 0;
+    private boolean stopThread = false;
+    private byte[] mmBuffer;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure);
 
-        USB_STAT = (TextView) findViewById(R.id.usb_status);
-
+        A_Parameter = (TextView) findViewById(R.id.a_par);
+        A_Parameter.setBackgroundColor(getColor(R.color.par_highlighted));
+        B_Parameter = (TextView) findViewById(R.id.b_par);
+        C_Parameter = (TextView) findViewById(R.id.c_par);
+        ID = (TextView) findViewById(R.id.id_par);
+        parameters.add(A_Parameter);
+        parameters.add(B_Parameter);
+        parameters.add(C_Parameter);
+        parameters.add(ID);
         Bundle bundle2 = getIntent().getExtras();
         if (bundle2 != null) {
             address = bundle2.getString("Address");
@@ -64,9 +78,6 @@ public class Configure extends AppCompatActivity {
 
         this.registerReceiver(mReceiver, filter2);
         this.registerReceiver(mReceiver, filter3);
-
-
-
 
         new Configure.ConnectBT().execute();
         new Handler().postDelayed(new Runnable() {
@@ -85,6 +96,8 @@ public class Configure extends AppCompatActivity {
         IntentFilter filter5 = new IntentFilter(ACTION_USB_DETACHED);
         this.registerReceiver(bReceiver, filter4);
         this.registerReceiver(bReceiver, filter5);
+
+
     }
 
     @Override
@@ -105,6 +118,7 @@ public class Configure extends AppCompatActivity {
         return super.onKeyLongPress(keyCode, event);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -123,7 +137,8 @@ public class Configure extends AppCompatActivity {
 
 
 
-
+        Toast.makeText(getApplicationContext(),keyCode,Toast.LENGTH_LONG).show();
+        Log.d("Rane", String.valueOf(keyCode));
         if ((keyCode == KeyEvent.KEYCODE_BUTTON_R1)&&(event.getRepeatCount()==0)) {
 
             if (event.getRepeatCount() == 0) {
@@ -138,7 +153,8 @@ public class Configure extends AppCompatActivity {
                 }*/
             }
             return true;
-        }/*
+        }
+        /*
         else if ((keyCode == KeyEvent.KEYCODE_HOME)) {
             event.startTracking();
             Toast.makeText(this, "WARNING! YOU PRESSED THE HOME BUTTON!", Toast.LENGTH_LONG).show();
@@ -194,10 +210,22 @@ public class Configure extends AppCompatActivity {
         }
         else if ((keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)&&(event.getRepeatCount()==0)) {
             event.startTracking();
+            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_default));
+            if(par_loc<4)
+                par_loc++;
+            if(par_loc==4)
+                par_loc = 0;
+            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_highlighted));
             return true;
         }
         else if ((keyCode == KeyEvent.KEYCODE_DPAD_LEFT)&&(event.getRepeatCount()==0)) {
             event.startTracking();
+            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_default));
+            if(par_loc<4)
+                par_loc--;
+            if(par_loc==0)
+                par_loc = -1;
+            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_highlighted));
             return true;
         }
         else if ((keyCode == KeyEvent.KEYCODE_DPAD_UP)&&(event.getRepeatCount()==0)) {
@@ -229,13 +257,13 @@ public class Configure extends AppCompatActivity {
         }
         else if(keyCode==KeyEvent.KEYCODE_VOLUME_UP)
         {
-            sendDataToPairedDevice("h");
+            sendDataToPairedDevice("S");
             return true;
 
         }
         else if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN)
         {
-            sendDataToPairedDevice("e");
+            sendDataToPairedDevice("S");
             return true;
         }
 
@@ -244,6 +272,9 @@ public class Configure extends AppCompatActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event)  {
+
+        Toast.makeText(getApplicationContext(),keyCode,Toast.LENGTH_LONG).show();
+        Log.d("Rane", String.valueOf(keyCode));
         if((keyCode==KeyEvent.KEYCODE_DPAD_LEFT))
         {
             event.startTracking();
@@ -544,7 +575,7 @@ public class Configure extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             Log.d(TAG,"Connecting");
-            progress = ProgressDialog.show(getApplicationContext(), "Connecting...", "Please wait!");  //show a progress dialog
+            progress = ProgressDialog.show(Configure.this, "Connecting...", "Please wait!");  //show a progress dialog
         }
 
         @Override
@@ -623,11 +654,8 @@ public class Configure extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-
-
-            } else if ((BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action))||(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action))||(!myBluetooth.isEnabled())||(!btSocket.isConnected())) {
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) { }
+            else if ((BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action))||(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action))||(!myBluetooth.isEnabled())||(!btSocket.isConnected())) {
 
                 isBtConnected=false;
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -644,9 +672,9 @@ public class Configure extends AppCompatActivity {
             String action = intent.getAction();
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 usbcount = 1;
-                usb_val="USB CONNECTED";
+                usb_val="USB CONNECTED";/*
                 USB_STAT.setTextColor(Color.GREEN);
-                USB_STAT.setText(usb_val);
+                USB_STAT.setText(usb_val);*/
                 //new ConnectBT().execute();
                 // connect_res.setText(usb_val+"\n"+bt_val);
 
@@ -654,8 +682,9 @@ public class Configure extends AppCompatActivity {
             else  if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 usbcount = 0;
                 usb_val="USB DISCONNECTED";
+                /*
                 USB_STAT.setTextColor(Color.RED);
-                USB_STAT.setText(usb_val);
+                USB_STAT.setText(usb_val);*/
                 sendDataToPairedDevice("S");
 
                 try {
@@ -667,5 +696,70 @@ public class Configure extends AppCompatActivity {
 
             }
         }
+    };
+
+    void beginListenForData()
+    {
+        final Handler handler = new Handler();//declaration of handler to pass the data from this thread to UI thread
+        stopThread = false;
+        mmBuffer = new byte[1024];
+
+        Thread thread  = new Thread(new Runnable() //new thread
+        {
+            public void run()
+            {
+                while (!Thread.currentThread().isInterrupted() && !stopThread) {
+
+                    try {
+                        mmInStream = btSocket.getInputStream();// Instream to read the input data
+                        mmBuffer = new byte[65536];//Initialization of mmBuffer
+                        int numBytes;
+                        if (mmInStream != null) {
+                            final StringBuilder message = new StringBuilder(); // Declaring string builder to create a mutable string
+                            numBytes = mmInStream.read(mmBuffer);
+
+                            for (int i = 0; i < numBytes; i++) {
+                                message.append(((char) Integer.parseInt(String.valueOf(mmBuffer[i]))));
+
+                            }
+                            handler.post(new Runnable() {
+                                public void run()
+                                {
+                                    String a = message.toString();//Typecasting of stringbuilder to string
+
+                                    /*String[] separated = a.split(":");//splitting of string
+                                    if(separated.length==5) {
+                                        String sensor1 = separated[0];
+                                        Sensortext1.setText(" Sensor 1 = " + "  " + sensor1);
+                                        String sensor2 = separated[1];
+                                        Sensortext2.setText(" Sensor 2 = " + "  " + sensor2);
+                                        String sensor3 = separated[2];
+                                        Sensortext3.setText(" Sensor 3 = " + "  " + sensor3);
+                                        String sensor4 = separated[3];
+                                        Sensortext4.setText(" Sensor 1 = " + "  " + sensor4);
+                                    }*/
+
+                                    A_Parameter.setText("A="+a);
+
+                                }
+                            });
+
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Input stream null", Toast.LENGTH_SHORT).show();//toast
+                        }
+
+
+                    } catch (IOException e) {
+                        Log.d(TAG, "Input stream was disconnected", e);//log
+                        stopThread = true;
+                        break;
+                    }
+                }
+
+            }
+        });
+
+        thread.start();
     };
 }

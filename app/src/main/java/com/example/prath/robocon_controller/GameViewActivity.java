@@ -34,6 +34,7 @@ import static android.util.LayoutDirection.RTL;
 public class GameViewActivity extends AppCompatActivity {
     public int rackcount = 0;
     public int stopflag = 0;
+    Thread con_fig;
     public int totalbuttonpress = 0;
     public int forcount = 0;
     public int backcount = 0;
@@ -104,6 +105,8 @@ public class GameViewActivity extends AppCompatActivity {
     Button RESCUE;
     Button STOP;
 
+    String prevchar="",newchar="S";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +152,16 @@ public class GameViewActivity extends AppCompatActivity {
         this.registerReceiver(mReceiver, filter2);
         this.registerReceiver(mReceiver, filter3);
 
-
+        con_fig = new Thread(){
+            @Override
+            public void run(){
+                unregisterReceiver(mReceiver);
+                unregisterReceiver(bReceiver);
+                Intent i = new Intent(getApplicationContext(),Configure.class);
+                i.putExtra("Address",address);
+                startActivity(i);
+            }
+        };
 
 
         new ConnectBT().execute();
@@ -203,7 +215,8 @@ RESCUE.setOnClickListener(new View.OnClickListener() {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        unregisterReceiver(mReceiver);
+        unregisterReceiver(bReceiver);
         Intent intent = new Intent(GameViewActivity.this, rescue.class);
         Bundle bundle = new Bundle();
         bundle.putString("ADDR", address);
@@ -506,6 +519,8 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
         else if ((keyCode == KeyEvent.KEYCODE_BUTTON_X) &&(event.getRepeatCount()==0)){
 
+            inputChar.setText("X");
+            con_fig.start();
             /*sendDataToPairedDevice("x");
             inputChar.setText("x");
             MODE.setText("AUTOMATIC");
@@ -521,9 +536,11 @@ RESET.setOnClickListener(new View.OnClickListener() {
             }
             // Temp="X";*/
 
+            /*unregisterReceiver(mReceiver);
+            unregisterReceiver(bReceiver);
             Intent i = new Intent(getApplicationContext(),Configure.class);
             i.putExtra("Address",address);
-            startActivity(i);
+            startActivity(i);*/
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)&&(event.getRepeatCount()==0)) {
             event.startTracking();
@@ -688,8 +705,8 @@ RESET.setOnClickListener(new View.OnClickListener() {
         }
         else if(keyCode==KeyEvent.KEYCODE_VOLUME_UP)
         {
-            sendDataToPairedDevice("h");
-            inputChar.setText("h");
+            sendDataToPairedDevice("S");
+            inputChar.setText("S");
             if(timestatus==0)
             {
                 timer.start();
@@ -700,8 +717,8 @@ RESET.setOnClickListener(new View.OnClickListener() {
         }
         else if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN)
         {
-            sendDataToPairedDevice("e");
-            inputChar.setText("e");
+            sendDataToPairedDevice("S");
+            inputChar.setText("S");
             if(timestatus==0)
             {
                 timer.start();
@@ -761,6 +778,8 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
         else if((keyCode==KeyEvent.KEYCODE_BUTTON_X))
         {
+            inputChar.setText("X");
+            con_fig.start();
 /*
             event.startTracking();
             sendDataToPairedDevice("S");
@@ -771,9 +790,11 @@ RESET.setOnClickListener(new View.OnClickListener() {
             Temp="S";
             tkey=0;
 */
+            /*unregisterReceiver(mReceiver);
+            unregisterReceiver(bReceiver);
             Intent i = new Intent(getApplicationContext(),Configure.class);
             i.putExtra("Address",address);
-            startActivity(i);
+            startActivity(i);*/
 
         }
 
@@ -847,13 +868,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
             DIREC.setText("STOP");
             return true;
 
-        } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_X)) {
-            event.startTracking();
-            if(tkey==1) {
-
-        }
-            return true;
-
         }
 
 
@@ -883,7 +897,7 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
 
 
-        if ((Y>=0.5)) {
+        /*if ((Y>=0.5)) {
                 //    sendDataToPairedDevice("y");
             county += 1;
             //HPWM=0;
@@ -920,7 +934,7 @@ RESET.setOnClickListener(new View.OnClickListener() {
             Hcount++;
             Lcount=0;
 
-        }
+        }*/
 
 
 
@@ -935,15 +949,15 @@ RESET.setOnClickListener(new View.OnClickListener() {
         KeyEvent.KEYCODE_BUTTON_THUMBL;
         KeyEvent.KEYCODE_BUTTON_THUMBR;*/
 
-        String prevchar="",newchar="S";
         if (KeyEvent.ACTION_DOWN ==InputDevice.SOURCE_UNKNOWN && event.getAction() == MotionEvent.ACTION_MOVE)
 
         {
             float A = event.getX();
             float B = event.getY();
+            SHAGAI_S.setText("A="+A);
+            SHAGAI_G.setText("B="+B);
 
-
-            if((int)A==0 && (int)B==0)
+            if(A<0.01 && A>-0.01 && B<0.01 && B>-0.01)
             {
                 newchar="S";
                 DIREC.setText("STOP");
@@ -955,7 +969,70 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
             }
 
-           else if((int)A==0 && (int)B<=1 && (int)B>=0)
+
+            else if(A>=-0.85 && A<=-0.15 && B<=0.85 && B>=0.15)
+            {
+                newchar="Y";
+                DIREC.setText("LEFT-BACKWARD");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+
+            }
+
+
+            else if(A>=0.15 && A<=0.85 && B<=0.85 && B>=0.15)
+            {
+                newchar="Z";
+                DIREC.setText("RIGHT-BACKWARD");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+
+            }
+            else if(A>=0.15 && A<=0.85 && B<=-0.15 && B>=-0.85)
+            {
+                newchar="W";
+                DIREC.setText("RIGHT-FORWARD");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+
+            }
+            else if(A<=-0.15 && A>=-0.85 && B<=-0.15 && B>=-0.85)
+            {
+                newchar="X";
+                DIREC.setText("LEFT-FORWARD");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+
+            }
+            else if(A>=-0.25 && A<=0.25 && B<=-0.75 && B>=-1)
+            {
+                newchar="F";
+                DIREC.setText("FORWARD");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+
+            }
+            else if(A>=-0.25 && A<=0.25 && B<=1 && B>=0.75)
             {
                 newchar="B";
                 DIREC.setText("BACKWARD");
@@ -968,7 +1045,36 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
             }
 
-            else if((int)A==0 && (int)B<=0 && (int)B>=-1)
+            else if(A>=0.75 && A<=1 && B<=0.25 && B>=-0.25)
+            {
+                newchar="R";
+                DIREC.setText("RIGHT");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+            }
+            else if(A>=-1 && A<=-0.75 && B<=0.25 && B>=-0.25)
+            {
+                newchar="L";
+                DIREC.setText("LEFT");
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+
+            }
+
+
+
+
+
+
+            /*else if((int)A==0 && (int)B<=0 && (int)B>=-1)
             {
 
                     newchar="F";
@@ -992,24 +1098,14 @@ RESET.setOnClickListener(new View.OnClickListener() {
                     timestatus=1;
                 }
 
-            }
+            }*/
 
-            else if((int)B==0 && (int)A<=1 && (int)A>=0)
-            {
-                newchar="R";
-                DIREC.setText("RIGHT");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
 
-            }
+            inputChar.setText(newchar);
 
 
             if(prevchar!=newchar)
             {
-                inputChar.setText(newchar);
                 sendDataToPairedDevice(newchar);
                 prevchar=newchar;
             }

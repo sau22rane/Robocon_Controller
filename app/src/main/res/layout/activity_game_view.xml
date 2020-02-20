@@ -85,7 +85,6 @@
         android:textSize="20sp" />
 
 
-
     <TextView
         android:id="@+id/textView5"
         android:layout_width="155dp"
@@ -94,7 +93,7 @@
         android:layout_alignBottom="@+id/textViewCommand"
         android:layout_marginLeft="20dp"
         android:layout_toEndOf="@+id/textViewCommand"
-        android:text="SHAGAI"
+        android:text="Value"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textSize="15dp" />
@@ -262,9 +261,9 @@
         android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/g"
-        android:layout_alignBottom="@+id/g"
         android:layout_alignStart="@+id/textView5"
-        android:text="p=0"
+        android:layout_alignBottom="@+id/g"
+        android:text="A=0"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textSize="25sp" />
@@ -275,7 +274,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView8"
         android:layout_toEndOf="@+id/s"
-        android:text="g=0"
+        android:text="B=0"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textSize="25sp" />

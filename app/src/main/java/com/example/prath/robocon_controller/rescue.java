@@ -137,11 +137,11 @@ public class rescue extends AppCompatActivity {
         Bundle bundle2 = getIntent().getExtras();
         if (bundle2 != null) {
             address = bundle2.getString("ADDR");
-            remTime=bundle2.getString("time");
+            //remTime=bundle2.getString("time");
 
         }
 
-        TIME=Long.parseLong((remTime+""));
+        //TIME=Long.parseLong((remTime+""));
 
 
 
@@ -159,14 +159,22 @@ public class rescue extends AppCompatActivity {
                 if (btSocket != null) {
                     try {
                         if(strength != 0) {
-                            if (angle >= 45 && angle <= 135)
+                            if (angle >= 67.5 && angle <= 112.5)
                                 op = "F";
-                            if (angle >= 225 && angle <=315 )
+                            if (angle >= 247.5 && angle <=292.5)
                                 op =  "B";
-                            if(angle>135 && angle<225)
+                            if(angle>157.5 && angle<202.5)
                                 op = "L";
-                            if(angle>315 || angle<45)
+                            if(angle>337.5 || angle<22.5)
                                 op = "R";
+                            if (angle >= 22.5 && angle <= 67.5)
+                                op = "W";
+                            if (angle >= 112.5 && angle <= 157.5)
+                                op = "X";
+                            if (angle >= 202.5 && angle <= 247.5)
+                                op = "Y";
+                            if (angle >= 292.5 && angle <= 337.5)
+                                op = "Z";
                         }
                         else
                             op =  "S";

@@ -1,14 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Configure">
+    tools:context=".Configure"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A=0"
+            android:textSize="25dp"
+            android:id="@+id/a_par"
+            android:layout_margin="15dp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B=0"
+            android:textSize="25dp"
+            android:id="@+id/b_par"
+            android:layout_margin="15dp">
+
+        </TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="C=0"
+            android:textSize="25dp"
+            android:id="@+id/c_par"
+            android:layout_margin="15dp">
+        </TextView>
+
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/usb_status"/>
+        android:text="ID=0"
+        android:textSize="25dp"
+        android:id="@+id/id_par"
+        android:layout_margin="15dp">
+    </TextView>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
