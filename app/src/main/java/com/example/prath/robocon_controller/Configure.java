@@ -21,6 +21,9 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +43,8 @@ public class Configure extends AppCompatActivity {
     String usb_val;
     ArrayList<TextView> parameters = new ArrayList<>();
     InputStream mmInStream = null;
-    TextView  A_Parameter,B_Parameter,C_Parameter,ID;
+    EditText  A_Parameter,B_Parameter,C_Parameter;
+    TextView A_par_v,B_par_v,C_par_v,ID;
     private ProgressDialog progress;
     private boolean isBtConnected = false;
     public double Y=0.0, Z=0.0;
@@ -51,16 +55,24 @@ public class Configure extends AppCompatActivity {
     private boolean stopThread = false;
     private byte[] mmBuffer;
 
+    int index = 0;
+    int sensor_id = 0;
+    Button send;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure);
 
-        A_Parameter = (TextView) findViewById(R.id.a_par);
+        A_Parameter = (EditText) findViewById(R.id.a_par);
         A_Parameter.setBackgroundColor(getColor(R.color.par_highlighted));
-        B_Parameter = (TextView) findViewById(R.id.b_par);
-        C_Parameter = (TextView) findViewById(R.id.c_par);
+        B_Parameter = (EditText) findViewById(R.id.b_par);
+        C_Parameter = (EditText) findViewById(R.id.c_par);
+        A_par_v = (TextView) findViewById(R.id.a_par_v);
+        A_par_v.setBackgroundColor(getColor(R.color.par_highlighted));
+        B_par_v = (TextView) findViewById(R.id.b_par_v);
+        C_par_v = (TextView) findViewById(R.id.c_par_v);
         ID = (TextView) findViewById(R.id.id_par);
         parameters.add(A_Parameter);
         parameters.add(B_Parameter);
@@ -68,7 +80,7 @@ public class Configure extends AppCompatActivity {
         parameters.add(ID);
         Bundle bundle2 = getIntent().getExtras();
         if (bundle2 != null) {
-            address = bundle2.getString("Address");
+            address = bundle2.getString("selected-item");
         }
 
         IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -96,6 +108,14 @@ public class Configure extends AppCompatActivity {
         IntentFilter filter5 = new IntentFilter(ACTION_USB_DETACHED);
         this.registerReceiver(bReceiver, filter4);
         this.registerReceiver(bReceiver, filter5);
+        send = (Button)findViewById(R.id.send_data);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String temp = String.valueOf(A_Parameter.getText()) +','+ String.valueOf(B_Parameter.getText())+','+String.valueOf(C_Parameter.getText())+',';
+                sendDataToPairedDevice(temp);
+            }
+        });
 
 
     }
@@ -104,469 +124,16 @@ public class Configure extends AppCompatActivity {
     public void onStop()
     {
         super.onStop();
-        sendDataToPairedDevice("S");
+        //sendDataToPairedDevice("S");
 
 
     }
 
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_HOME)) {
-            Toast.makeText(this, "WARNING! YOU PRESSED THE HOME BUTTON!", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return super.onKeyLongPress(keyCode, event);
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        /*if(HPWM==0)
-        {
 
-                sendDataToPairedDevice("l");
 
-        }
-        else if(HPWM==1)
-        {
 
-                sendDataToPairedDevice("h");
-
-        }*/
-
-
-
-        Toast.makeText(getApplicationContext(),keyCode,Toast.LENGTH_LONG).show();
-        Log.d("Rane", String.valueOf(keyCode));
-        if ((keyCode == KeyEvent.KEYCODE_BUTTON_R1)&&(event.getRepeatCount()==0)) {
-
-            if (event.getRepeatCount() == 0) {
-                event.startTracking();
-                sendDataToPairedDevice("R1");
-                /*inputChar.setText("d");
-
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-            }
-            return true;
-        }
-        /*
-        else if ((keyCode == KeyEvent.KEYCODE_HOME)) {
-            event.startTracking();
-            Toast.makeText(this, "WARNING! YOU PRESSED THE HOME BUTTON!", Toast.LENGTH_LONG).show();
-            return true;
-        }*/
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_L1) && (event.getRepeatCount()==0)) {
-
-            if (event.getRepeatCount() == 0) {
-                event.startTracking();
-                sendDataToPairedDevice("L1");
-                /*inputChar.setText("c");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-
-
-            }
-            return true;
-
-        }
-
-
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_R2) && (event.getRepeatCount()==0)) {
-
-
-            if (event.getRepeatCount() == 0) {
-                event.startTracking();
-                sendDataToPairedDevice("R2");
-            }
-            return true;
-
-
-
-
-        }
-
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_L2) && (event.getRepeatCount()==0)) {
-
-            if (event.getRepeatCount() == 0) {
-                event.startTracking();
-                sendDataToPairedDevice("L2");
-            }
-            return true;
-        }
-
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_X) &&(event.getRepeatCount()==0)){
-            event.startTracking();
-            sendDataToPairedDevice("X");
-
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)&&(event.getRepeatCount()==0)) {
-            event.startTracking();
-            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_default));
-            if(par_loc<4)
-                par_loc++;
-            if(par_loc==4)
-                par_loc = 0;
-            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_highlighted));
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_DPAD_LEFT)&&(event.getRepeatCount()==0)) {
-            event.startTracking();
-            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_default));
-            if(par_loc<4)
-                par_loc--;
-            if(par_loc==0)
-                par_loc = -1;
-            parameters.get(par_loc).setBackgroundColor(getColor(R.color.par_highlighted));
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_DPAD_UP)&&(event.getRepeatCount()==0)) {
-            event.startTracking();
-            sendDataToPairedDevice("S");
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_DPAD_DOWN)&&(event.getRepeatCount()==0)) {
-            event.startTracking();
-
-            sendDataToPairedDevice("S");
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_A) &&(event.getRepeatCount()==0)) {
-            event.startTracking();
-            sendDataToPairedDevice("A");
-
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_Y) &&(event.getRepeatCount()==0)) {
-            event.startTracking();
-            sendDataToPairedDevice("Y");
-            return true;
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_B) &&(event.getRepeatCount()==0)) {
-            event.startTracking();
-            sendDataToPairedDevice("b");
-            return true;
-        }
-        else if(keyCode==KeyEvent.KEYCODE_VOLUME_UP)
-        {
-            sendDataToPairedDevice("S");
-            return true;
-
-        }
-        else if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN)
-        {
-            sendDataToPairedDevice("S");
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)  {
-
-        Toast.makeText(getApplicationContext(),keyCode,Toast.LENGTH_LONG).show();
-        Log.d("Rane", String.valueOf(keyCode));
-        if((keyCode==KeyEvent.KEYCODE_DPAD_LEFT))
-        {
-            event.startTracking();
-            sendDataToPairedDevice("D_Left");
-            /*inputChar.setText("S");
-
-            Temp="S";
-            tkey=0;
-*/
-
-        }
-        else if((keyCode==KeyEvent.KEYCODE_DPAD_UP))
-        {
-            event.startTracking();
-            sendDataToPairedDevice("D_UP");
-            /*inputChar.setText("S");
-
-            Temp="S";
-            tkey=0;*/
-
-        }
-        else if((keyCode==KeyEvent.KEYCODE_DPAD_RIGHT))
-        {
-            event.startTracking();
-            sendDataToPairedDevice("D_Right");
-            /*inputChar.setText("S");
-
-            Temp="S";
-            tkey=0;*/
-
-
-        }
-        else if((keyCode==KeyEvent.KEYCODE_DPAD_DOWN))
-        {
-            event.startTracking();
-            sendDataToPairedDevice("D_Down");
-            /*inputChar.setText("S");
-
-            Temp="S";
-            tkey=0;*/
-
-
-        }
-
-        else if((keyCode==KeyEvent.KEYCODE_BUTTON_X))
-        {
-
-            event.startTracking();
-            sendDataToPairedDevice("X");
-            /*inputChar.setText("S");
-            MODE.setText("MANUAL");
-
-
-            Temp="S";
-            tkey=0;
-*/
-
-        }
-
-
-
-        /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_R1)) {
-            event.startTracking();
-            sendDataToPairedDevice("R1");
-            /*inputChar.setText("S");*/
-
-
-
-            return true;
-
-        } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_L1)) {
-            event.startTracking();
-            sendDataToPairedDevice("L1");
-            //inputChar.setText("S");
-
-
-            return true;
-
-        }
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_B))
-        {
-            event.startTracking();
-            sendDataToPairedDevice("B");
-            /*inputChar.setText("S");
-            DIREC.setText("STOP");*/
-
-            /*if(tkey==1) {
-                sendDataToPairedDevice(Temp);
-
-                if(Temp=="F") {
-                }
-                else if(Temp=="B") {
-                }
-
-
-
-
-                else if(Temp=="L") {
-                }
-                else if(Temp=="R") {
-                }
-
-
-            }*/
-
-            return true;
-
-        } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_Y)) {
-            event.startTracking();
-
-            sendDataToPairedDevice("Y");
-            /*inputChar.setText("S");
-            DIREC.setText("STOP");*/
-
-            return true;
-
-        } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_A)) {
-            event.startTracking();
-            sendDataToPairedDevice("A");
-            /*inputChar.setText("S");
-            DIREC.setText("STOP");*/
-            return true;
-
-        }
-
-
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-
-
-
-
-
-        Y=event.getAxisValue(MotionEvent.AXIS_BRAKE);
-        Z=event.getAxisValue(MotionEvent.AXIS_GAS);
-
-      /*  if(event.getActionButton()==MotionEvent.AXIS_BRAKE)
-        {
-        }
-        if(event.getActionButton()==MotionEvent.AXIS_GAS)
-        {
-        }*/
-
-
-
-
-
-
-
-        if ((Y>=0.5)) {
-            //    sendDataToPairedDevice("y");
-            county += 1;
-            //HPWM=0;
-
-            if(Lcount==0) {
-                // sendDataToPairedDevice("l");
-            }
-            Lcount++;
-            Hcount=0;
-
-        }
-
-        else if ((Z>=0.5)) {
-            //    sendDataToPairedDevice("y");
-            countz += 1;
-            //HPWM=0;
-
-            if(Lcount==0) {
-                //sendDataToPairedDevice("l");
-            }
-            Lcount++;
-            Hcount=0;
-
-        }
-
-        else
-        {
-
-            //HPWM=1;
-            countz=0;
-            if(Hcount==0) {
-                //  sendDataToPairedDevice("h");
-            }
-            Hcount++;
-            Lcount=0;
-
-        }
-
-
-
-
-
-        event.getSource();
-        //inputChar.setText(event.toString());
-        //inputChar.setTextSize(20);
-
-        /*InputDevice.SOURCE_CLASS_JOYSTICK;
-        MotionEvent.ACTION_BUTTON_PRESS;
-        KeyEvent.KEYCODE_BUTTON_THUMBL;
-        KeyEvent.KEYCODE_BUTTON_THUMBR;*/
-
-        String prevchar="",newchar="S";
-        if (KeyEvent.ACTION_DOWN ==InputDevice.SOURCE_UNKNOWN && event.getAction() == MotionEvent.ACTION_MOVE)
-
-        {
-            float A = event.getX();
-            float B = event.getY();
-
-
-            if((int)A==0 && (int)B==0)
-            {
-                newchar="S";
-                /*DIREC.setText("STOP");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-
-            }
-
-            else if((int)A==0 && (int)B<=1 && (int)B>=0)
-            {
-                newchar="B";
-                /*DIREC.setText("BACKWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-
-
-            }
-
-            else if((int)A==0 && (int)B<=0 && (int)B>=-1)
-            {
-
-                newchar="F";
-                /*DIREC.setText("FORWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-
-            }
-
-
-            else if((int)B==0 && (int)A<=0 && (int)A>=-1)
-            {
-                newchar="L";
-                /*DIREC.setText("LEFT");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-
-            }
-
-            else if((int)B==0 && (int)A<=1 && (int)A>=0)
-            {
-                newchar="R";
-                /*DIREC.setText("RIGHT");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }*/
-
-            }
-
-
-            if(prevchar!=newchar)
-            {
-                //inputChar.setText(newchar);
-                sendDataToPairedDevice(newchar);
-                prevchar=newchar;
-            }
-
-
-            return true;
-        }
-
-
-
-        return super.onGenericMotionEvent(event);
-    }
 
     private class ConnectBT extends AsyncTask<Void, Void, Void> {
         private boolean ConnectSuccess = true;
@@ -621,6 +188,8 @@ public class Configure extends AppCompatActivity {
 
             }
             progress.dismiss();
+            sendDataToPairedDevice("k");
+            beginListenForData();
         }
 
 
@@ -660,7 +229,7 @@ public class Configure extends AppCompatActivity {
                 isBtConnected=false;
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(1000);
-                sendDataToPairedDevice("S");
+                //sendDataToPairedDevice("S");
 
             }
 
@@ -685,7 +254,7 @@ public class Configure extends AppCompatActivity {
                 /*
                 USB_STAT.setTextColor(Color.RED);
                 USB_STAT.setText(usb_val);*/
-                sendDataToPairedDevice("S");
+                //sendDataToPairedDevice("S");
 
                 try {
                     btSocket.close();
@@ -698,8 +267,7 @@ public class Configure extends AppCompatActivity {
         }
     };
 
-    void beginListenForData()
-    {
+    void beginListenForData() {
         final Handler handler = new Handler();//declaration of handler to pass the data from this thread to UI thread
         stopThread = false;
         mmBuffer = new byte[1024];
@@ -726,20 +294,17 @@ public class Configure extends AppCompatActivity {
                                 public void run()
                                 {
                                     String a = message.toString();//Typecasting of stringbuilder to string
-
-                                    /*String[] separated = a.split(":");//splitting of string
-                                    if(separated.length==5) {
+                                    Log.d("Rane",a);
+                                    String[] separated = a.split(",");//splitting of string
+                                    if(separated.length==3) {
                                         String sensor1 = separated[0];
-                                        Sensortext1.setText(" Sensor 1 = " + "  " + sensor1);
+                                        A_par_v.setText(sensor1);
                                         String sensor2 = separated[1];
-                                        Sensortext2.setText(" Sensor 2 = " + "  " + sensor2);
+                                        B_par_v.setText(sensor2);
                                         String sensor3 = separated[2];
-                                        Sensortext3.setText(" Sensor 3 = " + "  " + sensor3);
-                                        String sensor4 = separated[3];
-                                        Sensortext4.setText(" Sensor 1 = " + "  " + sensor4);
-                                    }*/
+                                        C_par_v.setText(sensor3);
+                                    }
 
-                                    A_Parameter.setText("A="+a);
 
                                 }
                             });

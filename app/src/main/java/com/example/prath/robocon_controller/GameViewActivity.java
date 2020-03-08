@@ -11,9 +11,11 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +36,7 @@ import static android.util.LayoutDirection.RTL;
 public class GameViewActivity extends AppCompatActivity {
     public int rackcount = 0;
     public int stopflag = 0;
+
     Thread con_fig;
     public int totalbuttonpress = 0;
     public int forcount = 0;
@@ -65,7 +68,8 @@ public class GameViewActivity extends AppCompatActivity {
     String XXX="";
     int B, SF, SB;
     int PWMFin = 0;
-    public double Y=0.0, Z=0.0;
+    public double Y=0.0;
+    public double Z=0.0;
     String remTime="180000";
     String Rack = "Command";
     final static UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -88,6 +92,8 @@ public class GameViewActivity extends AppCompatActivity {
     public String Temp="";
     public int tkey=0;
 
+    String Rnewchar = "S", Lnewchar = "S";
+
     //connect_res
     TextView inputChar;
     TextView USB_STAT;
@@ -104,6 +110,7 @@ public class GameViewActivity extends AppCompatActivity {
     Button RESET;
     Button RESCUE;
     Button STOP;
+    Button configure;
 
     String prevchar="",newchar="S";
 
@@ -138,7 +145,19 @@ public class GameViewActivity extends AppCompatActivity {
         GEREGE=findViewById(R.id.gerege);
         MIN=findViewById(R.id.TVMin);
         SEC=findViewById(R.id.TVSec);
-
+        configure = (Button)findViewById(R.id.To_Data);
+        configure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),Configure.class);
+                /*getApplicationContext().unregisterReceiver(mReceiver);
+                getApplicationContext().unregisterReceiver(bReceiver);*/
+                Bundle bundle = new Bundle();
+                bundle.putString("address",address);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
 
 
     /*TVUSB.setText("USB: Disconnected");
@@ -152,16 +171,7 @@ public class GameViewActivity extends AppCompatActivity {
         this.registerReceiver(mReceiver, filter2);
         this.registerReceiver(mReceiver, filter3);
 
-        con_fig = new Thread(){
-            @Override
-            public void run(){
-                unregisterReceiver(mReceiver);
-                unregisterReceiver(bReceiver);
-                Intent i = new Intent(getApplicationContext(),Configure.class);
-                i.putExtra("Address",address);
-                startActivity(i);
-            }
-        };
+
 
 
         new ConnectBT().execute();
@@ -373,6 +383,8 @@ RESET.setOnClickListener(new View.OnClickListener() {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
+
+
         /*if(HPWM==0)
         {
 
@@ -428,49 +440,16 @@ RESET.setOnClickListener(new View.OnClickListener() {
         }
 
 
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_R2) && (event.getRepeatCount()==0)) {
+        else if ((keyCode == 105) && (event.getRepeatCount()==0)) {
 
 
-            if (event.getRepeatCount() == 0) {
-                event.startTracking();
-                sendDataToPairedDevice("g");
-                inputChar.setText("g");
-                shagai_sdisp=0;
-
-                SHAGAI_S.setText("s="+shagai_sdisp);
-                shagai_gdisp++;
-                if(shagai_gdisp==1)
-                {
-
-                    SHAGAI_G.setText("g="+shagai_gdisp);
-                }
-                if(shagai_gdisp==2){
-
-                    SHAGAI_G.setText("g="+shagai_gdisp);
-                }
-                if(shagai_gdisp==3)
-                {
-
-                    SHAGAI_G.setText("g="+shagai_gdisp);
-                }
-                if(shagai_gdisp==4)
-                {
-
-                    SHAGAI_G.setText("g="+shagai_gdisp);
-                }
-                if(shagai_gdisp==5)
-                {
-                    shagai_gdisp=1;
-                    SHAGAI_G.setText("g="+shagai_gdisp);
-
-                }
-
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
+            inputChar.setText("g");
+            event.startTracking();
+            sendDataToPairedDevice("g");
+            if(timestatus==0)
+            {
+                timer.start();
+                timestatus=1;
             }
             return true;
 
@@ -479,48 +458,24 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
         }
 
-        else if ((keyCode == KeyEvent.KEYCODE_BUTTON_L2) && (event.getRepeatCount()==0)) {
+        else if ((keyCode == 104) && (event.getRepeatCount()==0)) {
 
-            if (event.getRepeatCount() == 0) {
-                event.startTracking();
-                sendDataToPairedDevice("p");
-                inputChar.setText("p");
-                shagai_sdisp++;
-                shagai_gdisp=0;
-                SHAGAI_G.setText("g="+shagai_gdisp);
-
-                if(shagai_sdisp==1)
-                {
-                    SHAGAI_S.setText("p="+shagai_sdisp);
-                }
-                if (shagai_sdisp==2)
-                {
-                    SHAGAI_S.setText("p="+shagai_sdisp);
-
-                }
-                if(shagai_sdisp==3)
-                {
-                    shagai_sdisp=1;
-                    SHAGAI_S.setText("p="+shagai_sdisp);
-                }
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-
-
-
+            event.startTracking();
+            sendDataToPairedDevice("p");
+            inputChar.setText("p");
+            if(timestatus==0)
+            {
+                timer.start();
+                timestatus=1;
             }
             return true;
         }
 
         else if ((keyCode == KeyEvent.KEYCODE_BUTTON_X) &&(event.getRepeatCount()==0)){
 
-            inputChar.setText("X");
-            con_fig.start();
+            inputChar.setText("x");
+            sendDataToPairedDevice("x");
+            //con_fig.start();
             /*sendDataToPairedDevice("x");
             inputChar.setText("x");
             MODE.setText("AUTOMATIC");
@@ -558,13 +513,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 timestatus=1;
             }
 
-           /* totalbuttonpress += 1;
-            if ((totalbuttonpress == 1)) {
-                timer.start();
-            }
-            stopflag = 0;
-            */
-
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_DPAD_LEFT)&&(event.getRepeatCount()==0)) {
             event.startTracking();
@@ -579,12 +527,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 timestatus=1;
             }
 
-           /* totalbuttonpress += 1;
-            if ((totalbuttonpress == 1)) {
-                timer.start();
-            }
-            stopflag = 0;
-            */
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_DPAD_UP)&&(event.getRepeatCount()==0)) {
             event.startTracking();
@@ -600,12 +542,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 timer.start();
                 timestatus=1;
             }
-            /*totalbuttonpress += 1;
-            if ((totalbuttonpress == 1)) {
-                timer.start();
-           }
-            stopflag = 0;
-            */
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_DPAD_DOWN)&&(event.getRepeatCount()==0)) {
             event.startTracking();
@@ -622,71 +558,28 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 timer.start();
                 timestatus=1;
             }
-            /*
-            totalbuttonpress += 1;
-            if ((totalbuttonpress == 1)) {
 
-                timer.start();
-
-            }
-
-            stopflag = 0;
-            */
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_A) &&(event.getRepeatCount()==0)) {
             event.startTracking();
             sendDataToPairedDevice("a");
             inputChar.setText("a");
             tkey=0;
-            if(timestatus==0)
-            {
+            if(timestatus==0) {
                 timer.start();
-                timestatus=1;
-            }
-            //Temp="A";
-
-
-            gcount+=1;
-
-
-            if(gcount%2==0)
-            {
-            }
-            else if(gcount%2!=0)
-            {
+                timestatus = 1;
             }
             return true;
         }   else if ((keyCode == KeyEvent.KEYCODE_BUTTON_Y) &&(event.getRepeatCount()==0)) {
             event.startTracking();
             sendDataToPairedDevice("y");
             inputChar.setText("y");            //Temp="Y";
-            gerege_disp++;
-            if (gerege_disp==1){
-                GEREGE.setText(""+gerege_disp);
-            }
-            if(gerege_disp==2)
-            {
-                gerege_disp=0;
-                GEREGE.setText(""+gerege_disp);
-
-
-            }
-
             if(timestatus==0)
             {
                 timer.start();
                 timestatus=1;
-            } /* ncount+=1;
-                if(ncount%2==0)
-                {
-                }
+            }
 
-
-
-                else if(ncount%2!=0)
-                {
-                }
-*/
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_B) &&(event.getRepeatCount()==0)) {
             event.startTracking();
@@ -697,10 +590,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 timer.start();
                 timestatus=1;
             }
-               /* sendDataToPairedDevice("c");
-                //Temp="c";
-
-                    tkey=0;*/
             return true;
         }
         else if(keyCode==KeyEvent.KEYCODE_VOLUME_UP)
@@ -726,6 +615,8 @@ RESET.setOnClickListener(new View.OnClickListener() {
             }
             return true;
         }
+
+
 
         return super.onKeyDown(keyCode, event);
     }
@@ -778,11 +669,12 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
         else if((keyCode==KeyEvent.KEYCODE_BUTTON_X))
         {
-            inputChar.setText("X");
-            con_fig.start();
+            event.startTracking();
+            inputChar.setText("S");
+            sendDataToPairedDevice("S");
+            //con_fig.start();
 /*
             event.startTracking();
-            sendDataToPairedDevice("S");
             inputChar.setText("S");
             MODE.setText("MANUAL");
 
@@ -810,6 +702,26 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
             return true;
 
+        }
+        else if ((keyCode == 105)) {
+            event.startTracking();
+            sendDataToPairedDevice("S");
+            inputChar.setText("S");
+
+
+
+            return true;
+
+        }
+        else if ((keyCode == 104)) {
+            event.startTracking();
+            sendDataToPairedDevice("S");
+            inputChar.setText("S");
+
+
+
+            return true;
+
         } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_L1)) {
             event.startTracking();
             sendDataToPairedDevice("S");
@@ -820,12 +732,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
         } else if ((keyCode == KeyEvent.KEYCODE_BUTTON_B))
         {
-
-
-
-
-
-
             event.startTracking();
             sendDataToPairedDevice("S");
             inputChar.setText("S");
@@ -871,9 +777,11 @@ RESET.setOnClickListener(new View.OnClickListener() {
         }
 
 
+
         return super.onKeyUp(keyCode, event);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
 
@@ -881,81 +789,117 @@ RESET.setOnClickListener(new View.OnClickListener() {
 
 
 
-        Y=event.getAxisValue(MotionEvent.AXIS_BRAKE);
-        Z=event.getAxisValue(MotionEvent.AXIS_GAS);
+        String Q=event.getAxisValue(MotionEvent.AXIS_X)+"  "+event.getAxisValue(MotionEvent.AXIS_Y);
+        String P=event.getAxisValue(MotionEvent.AXIS_Z)+" "+event.getAxisValue(MotionEvent.AXIS_RZ);
 
-      /*  if(event.getActionButton()==MotionEvent.AXIS_BRAKE)
-        {
-        }
-        if(event.getActionButton()==MotionEvent.AXIS_GAS)
-        {
-        }*/
-
-
-
-
-
-
-
-        /*if ((Y>=0.5)) {
-                //    sendDataToPairedDevice("y");
-            county += 1;
-            //HPWM=0;
-
-            if(Lcount==0) {
-               // sendDataToPairedDevice("l");
-            }
-            Lcount++;
-            Hcount=0;
-
-        }
-
-        else if ((Z>=0.5)) {
-                        //    sendDataToPairedDevice("y");
-            countz += 1;
-            //HPWM=0;
-
-            if(Lcount==0) {
-                //sendDataToPairedDevice("l");
-            }
-            Lcount++;
-            Hcount=0;
-
-        }
-
-        else
-        {
-
-            //HPWM=1;
-            countz=0;
-            if(Hcount==0) {
-              //  sendDataToPairedDevice("h");
-            }
-            Hcount++;
-            Lcount=0;
-
-        }*/
-
-
-
-
+        SHAGAI_S.setText("A="+Q);
+        SHAGAI_G.setText("B="+P);
 
         event.getSource();
-        //inputChar.setText(event.toString());
-        //inputChar.setTextSize(20);
+        inputChar.setTextSize(10);
 
         /*InputDevice.SOURCE_CLASS_JOYSTICK;
         MotionEvent.ACTION_BUTTON_PRESS;
         KeyEvent.KEYCODE_BUTTON_THUMBL;
         KeyEvent.KEYCODE_BUTTON_THUMBR;*/
 
-        if (KeyEvent.ACTION_DOWN ==InputDevice.SOURCE_UNKNOWN && event.getAction() == MotionEvent.ACTION_MOVE)
-
-        {
+        if (KeyEvent.ACTION_DOWN ==InputDevice.SOURCE_UNKNOWN && event.getAction() == MotionEvent.ACTION_MOVE) {
             float A = event.getX();
             float B = event.getY();
-            SHAGAI_S.setText("A="+A);
-            SHAGAI_G.setText("B="+B);
+            float AR = event.getAxisValue(MotionEvent.AXIS_Z);
+            float BR = event.getAxisValue(MotionEvent.AXIS_RZ);
+
+
+            Double angleR = Math.atan(AR/BR)*180/Math.PI+90;
+
+            if(AR<0.01 && AR>-0.01 && BR<0.01 && BR>-0.01)
+            {
+                Rnewchar="S";
+                if(timestatus==0)
+                {
+                    timer.start();
+                    timestatus=1;
+                }
+
+            }
+            else {
+
+                if (BR < 0) {
+
+                    if (angleR > 18.5 && angleR < 71.5) {
+                        Rnewchar = "W";
+                        DIREC.setText("RIGHT-FORWARD");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else if (angleR > 108.5 && angleR < 161.5) {
+                        Rnewchar = "X";
+                        DIREC.setText("LEFT-FORWARD");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else{
+                        Rnewchar="S";
+                        if(timestatus==0)
+                        {
+                            timer.start();
+                            timestatus=1;
+                        }
+                    }
+
+                }
+
+                if (BR > 0) {
+
+                    if (angleR > 18.5 && angleR < 71.5) {
+                        Rnewchar = "Y";
+                        DIREC.setText("LEFT-BACKWARD");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else if (angleR > 108.5 && angleR < 161.5) {
+                        Rnewchar = "Z";
+                        DIREC.setText("RIGHT-BACKWARD");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else{
+                        Rnewchar="S";
+                        if(timestatus==0)
+                        {
+                            timer.start();
+                            timestatus=1;
+                        }
+                    }
+
+                }
+                inputChar.setText(Rnewchar);
+
+
+                if(prevchar!=Rnewchar)
+                {
+                    sendDataToPairedDevice(Rnewchar);
+                    prevchar=Rnewchar;
+                }
+
+
+                return true;
+
+
+            }
+
+
+
+
+            Double angleL = Math.atan(A/B)*180/Math.PI+90;
 
             if(A<0.01 && A>-0.01 && B<0.01 && B>-0.01)
             {
@@ -968,138 +912,90 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 }
 
             }
+            else {
+
+                if (B < 0) {
+                    if (angleL < 22.5) {
+                        newchar = "R";
+                        DIREC.setText("RIGHT");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
 
 
-            else if(A>=-0.85 && A<=-0.15 && B<=0.85 && B>=0.15)
-            {
-                newchar="Y";
-                DIREC.setText("LEFT-BACKWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
+                    else if (angleL > 67.5 && angleL < 112.5) {
+                        newchar = "F";
+                        DIREC.setText("FORWARD");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+
+                    else if (angleL > 157.5) {
+                        newchar = "L";
+                        DIREC.setText("LEFT");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else{
+                        newchar="S";
+                        if(timestatus==0)
+                        {
+                            timer.start();
+                            timestatus=1;
+                        }
+                    }
+
                 }
+
+                if (B > 0) {
+                    if (angleL < 22.5) {
+                        newchar = "L";
+                        DIREC.setText("Left");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+
+
+                    else if (angleL > 67.5 && angleL < 112.5) {
+                        newchar = "B";
+                        DIREC.setText("BACKWARD");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else if (angleL > 157.5) {
+                        newchar = "R";
+                        DIREC.setText("RIGHT");
+                        if (timestatus == 0) {
+                            timer.start();
+                            timestatus = 1;
+                        }
+                    }
+                    else{
+                        newchar="S";
+                        if(timestatus==0)
+                        {
+                            timer.start();
+                            timestatus=1;
+                        }
+                    }
+
+                }
+
 
 
             }
 
-
-            else if(A>=0.15 && A<=0.85 && B<=0.85 && B>=0.15)
-            {
-                newchar="Z";
-                DIREC.setText("RIGHT-BACKWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-            }
-            else if(A>=0.15 && A<=0.85 && B<=-0.15 && B>=-0.85)
-            {
-                newchar="W";
-                DIREC.setText("RIGHT-FORWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-            }
-            else if(A<=-0.15 && A>=-0.85 && B<=-0.15 && B>=-0.85)
-            {
-                newchar="X";
-                DIREC.setText("LEFT-FORWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-            }
-            else if(A>=-0.25 && A<=0.25 && B<=-0.75 && B>=-1)
-            {
-                newchar="F";
-                DIREC.setText("FORWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-            }
-            else if(A>=-0.25 && A<=0.25 && B<=1 && B>=0.75)
-            {
-                newchar="B";
-                DIREC.setText("BACKWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-            }
-
-            else if(A>=0.75 && A<=1 && B<=0.25 && B>=-0.25)
-            {
-                newchar="R";
-                DIREC.setText("RIGHT");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-            }
-            else if(A>=-1 && A<=-0.75 && B<=0.25 && B>=-0.25)
-            {
-                newchar="L";
-                DIREC.setText("LEFT");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-
-            }
-
-
-
-
-
-
-            /*else if((int)A==0 && (int)B<=0 && (int)B>=-1)
-            {
-
-                    newchar="F";
-                    DIREC.setText("FORWARD");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-            }
-
-
-            else if((int)B==0 && (int)A<=0 && (int)A>=-1)
-            {
-                newchar="L";
-                DIREC.setText("LEFT");
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-
-            }*/
-
+            //inputChar.setText(""+Y+" "+Z);
 
             inputChar.setText(newchar);
 
@@ -1109,6 +1005,7 @@ RESET.setOnClickListener(new View.OnClickListener() {
                 sendDataToPairedDevice(newchar);
                 prevchar=newchar;
             }
+
 
 
             return true;

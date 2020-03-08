@@ -8,6 +8,14 @@
     android:orientation="vertical"
     android:gravity="center">
 
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Values are"
+        android:gravity="center">
+
+    </TextView>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,34 +23,90 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="A=0"
+            android:text="0"
             android:textSize="25dp"
+            android:inputType="text"
+            android:gravity="center"
+            android:maxLines="1"
+            android:id="@+id/a_par_v"
+            android:layout_margin="15dp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="25dp"
+            android:inputType="text"
+            android:gravity="center"
+            android:maxLines="1"
+            android:id="@+id/b_par_v"
+            android:layout_margin="15dp">
+
+        </TextView>
+
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="25dp"
+            android:inputType="text"
+            android:gravity="center"
+            android:maxLines="1"
+            android:id="@+id/c_par_v"
+            android:layout_margin="15dp">
+        </TextView>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="25dp"
+            android:inputType="text"
+            android:maxLines="1"
             android:id="@+id/a_par"
+            android:gravity="center"
             android:layout_margin="15dp">
 
-        </TextView>
+        </EditText>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="B=0"
+            android:text="0"
             android:textSize="25dp"
+            android:inputType="text"
+            android:maxLines="1"
             android:id="@+id/b_par"
+            android:gravity="center"
             android:layout_margin="15dp">
 
-        </TextView>
+        </EditText>
 
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="C=0"
+            android:text="0"
             android:textSize="25dp"
+            android:inputType="text"
+            android:maxLines="1"
             android:id="@+id/c_par"
+            android:gravity="center"
             android:layout_margin="15dp">
-        </TextView>
+        </EditText>
 
 
     </LinearLayout>
@@ -55,5 +119,10 @@
         android:id="@+id/id_par"
         android:layout_margin="15dp">
     </TextView>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:id="@+id/send_data"/>
 
 </LinearLayout>

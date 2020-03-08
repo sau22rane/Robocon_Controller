@@ -292,6 +292,15 @@
         android:text="COMMAND"
         android:textAlignment="center"
         android:textColor="@android:color/background_light" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/To_Data"
+        android:text="Configure"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="40dp">
+    </Button>
 
 
 </RelativeLayout>

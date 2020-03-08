@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             int length = value.length();
             String mac_address = value.substring(length - 17, length);
             mac_add.setText(mac_address);
-            Intent intent = new Intent(MainActivity.this, GameViewActivity.class);
+            Intent intent = new Intent(MainActivity.this, Configure.class);
             Bundle bundle = new Bundle();
             bundle.putString("selected-item", mac_address);
             bundle.putString("remainingtime",T);
