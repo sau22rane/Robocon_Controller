@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Robocon_Controller2</string>
+    <string name="app_name">RoboCtrl 2Joystick</string>
     <string name="game_controller_input_description">ROBOCON Manual4</string>
 </resources>

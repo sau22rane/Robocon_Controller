@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.prath.robocon_controller">
+    package="com.example.prath.robocon_controller_2_joystict">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.prath.robocon_controller_2_joystict.MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,14 +27,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameViewActivity"
+            android:name="com.example.prath.robocon_controller_2_joystict.GameViewActivity"
             android:configChanges="keyboard|keyboardHidden|screenSize|orientation"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".rescue"
+            android:name="com.example.prath.robocon_controller_2_joystict.rescue"
             android:screenOrientation="landscape" />
-        <activity android:name=".Configure"
-
+        <activity android:name="com.example.prath.robocon_controller_2_joystict.Configure"
+            android:configChanges="keyboard|keyboardHidden|screenSize|orientation"
             android:screenOrientation="landscape">
         </activity>
     </application>

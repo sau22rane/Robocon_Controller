@@ -1,4 +1,4 @@
-package com.example.prath.robocon_controller;
+package com.example.prath.robocon_controller_2_joystict;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -26,33 +26,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.UUID;
 
-import io.github.controlwear.virtual.joystick.android.JoystickView;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.hardware.usb.UsbManager;
-import android.media.MediaPlayer;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.bluetooth.BluetoothSocket;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import java.io.IOException;
-import java.util.UUID;
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class rescue extends AppCompatActivity {
@@ -272,117 +245,213 @@ public class rescue extends AppCompatActivity {
                 sendDataToPairedDevice("c");
             }
           });*/
-
-        L1.setOnClickListener(new View.OnClickListener() {
+        L1.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("c");
+                    sendDataToPairedDevice("c");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
                 }
-                        command.setText("c");
-                        sendDataToPairedDevice("c");
 
+                return true;
+            }
+        });
+        R1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("d");
+                    sendDataToPairedDevice("d");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
+                }
+
+                return true;
+            }
+        });
+        L2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("p");
+                    sendDataToPairedDevice("p");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
+                }
+
+                return true;
+            }
+        });
+        R2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("g");
+                    sendDataToPairedDevice("g");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
+                }
+
+                return true;
             }
         });
 
-        R1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-                command.setText("d");
-                sendDataToPairedDevice("d");
 
-            }
-        });
-        L2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-                command.setText("p");
-                sendDataToPairedDevice("p");
 
-            }
-        });
-        R2.setOnClickListener(new View.OnClickListener() {
+
+
+
+
+
+
+        BA.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("a");
+                    sendDataToPairedDevice("a");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
                 }
 
-                command.setText("g");
-                sendDataToPairedDevice("g");
-
+                return true;
             }
         });
 
 
 
-
-
-        BA.setOnClickListener(new View.OnClickListener() {
+        BB.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("b");
+                    sendDataToPairedDevice("b");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
                 }
-                command.setText("a");
-                sendDataToPairedDevice("a");
+
+                return true;
             }
         });
 
 
-        BB.setOnClickListener(new View.OnClickListener() {
+        BX.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("x");
+                    sendDataToPairedDevice("x");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
                 }
-                command.setText("b");
-                sendDataToPairedDevice("b");
+
+                return true;
             }
         });
 
-        BX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
-                }
-                command.setText("x");
-                sendDataToPairedDevice("x");
-            }
-        });
 
 
-        BY.setOnClickListener(new View.OnClickListener() {
+        BY.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                if(timestatus==0)
-                {
-                    timer.start();
-                    timestatus=1;
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("y");
+                    sendDataToPairedDevice("y");
+                } else if ( motionEvent.getAction() == MotionEvent.ACTION_UP ){
+                    if(timestatus==0)
+                    {
+                        timer.start();
+                        timestatus=1;
+                    }
+                    command.setText("S");
+                    sendDataToPairedDevice("S");
                 }
-                command.setText("y");
-                sendDataToPairedDevice("y");
+
+                return true;
             }
         });
        BStop.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package com.example.prath.robocon_controller;
+package com.example.prath.robocon_controller_2_joystict;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -30,8 +30,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.UUID;
-
-import static android.util.LayoutDirection.RTL;
 
 public class GameViewActivity extends AppCompatActivity {
     public int rackcount = 0;
@@ -114,6 +112,13 @@ public class GameViewActivity extends AppCompatActivity {
 
     String prevchar="",newchar="S";
 
+    IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+    IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+    IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+    IntentFilter filter4 = new IntentFilter(ACTION_USB_ATTACHED);
+    IntentFilter filter5 = new IntentFilter(ACTION_USB_DETACHED);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,13 +154,27 @@ public class GameViewActivity extends AppCompatActivity {
         configure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {
+                    btSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                unregisterReceiver(mReceiver);
+                unregisterReceiver(bReceiver);
                 Intent i = new Intent(getApplicationContext(),Configure.class);
                 /*getApplicationContext().unregisterReceiver(mReceiver);
                 getApplicationContext().unregisterReceiver(bReceiver);*/
                 Bundle bundle = new Bundle();
-                bundle.putString("address",address);
+                bundle.putString("selected-item",address);
                 i.putExtras(bundle);
                 startActivity(i);
+                registerReceiver(mReceiver, filter1);
+
+                registerReceiver(mReceiver, filter2);
+                registerReceiver(mReceiver, filter3);
+                registerReceiver(bReceiver, filter4);
+                registerReceiver(bReceiver, filter5);
+                //finish();
             }
         });
 
@@ -163,13 +182,11 @@ public class GameViewActivity extends AppCompatActivity {
     /*TVUSB.setText("USB: Disconnected");
     TVUSB.setTextColor(Color.rgb(255,0,0));*/
         ADDR.setText(address);
-        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         this.registerReceiver(mReceiver, filter1);
 
         this.registerReceiver(mReceiver, filter2);
         this.registerReceiver(mReceiver, filter3);
+
 
 
 
@@ -193,9 +210,6 @@ public class GameViewActivity extends AppCompatActivity {
     filter.addAction(ACTION_USB_ATTACHED);
     filter.addAction(ACTION_USB_DETACHED);
     registerReceiver(bReceiver,filter);*/
-
-        IntentFilter filter4 = new IntentFilter(ACTION_USB_ATTACHED);
-        IntentFilter filter5 = new IntentFilter(ACTION_USB_DETACHED);
         this.registerReceiver(bReceiver, filter4);
         this.registerReceiver(bReceiver, filter5);
 
@@ -1109,154 +1123,6 @@ RESET.setOnClickListener(new View.OnClickListener() {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 
-    public int rangesetA(float RA) {
-
-        if((RA>0.0)&&(RA<=20.0))
-        {
-            rangeA=50;
-            r1+=1; r2=0; r3=0; r4=0; r5=0;
-
-        }
-        else if((RA>20.0)&&(RA<=40.0))
-        {
-            rangeA=100;
-            r1=0; r2+=1; r3=0; r4=0; r5=0;
-        }
-        else if((RA>40.0)&&(RA<=60.0))
-        {
-            rangeA=150;
-            r1=0; r2=0; r3+=1; r4=0; r5=0;
-        }
-        else if((RA>60.0)&&(RA<=80.0))
-        {
-            rangeA=200;
-            r1=0; r2=0; r3=0; r4+=1; r5=0;
-        }
-        else if((RA>80.0)&&(RA<=100.0))
-        {
-            rangeA=250;
-            r1=0; r2=0; r3=0; r4=0; r5+=1;
-        }
-
-        /*
-        if((RA>0.0)&&(RA<=10.0))
-        {
-            rangeA=25;
-        }
-        else if((RA>10.0)&&(RA<=20.0))
-        {
-            rangeA=50;
-        }
-        else if((RA>20.0)&&(RA<=30.0))
-        {
-            rangeA=75;
-        }
-        else if((RA>30.0)&&(RA<=40.0))
-        {
-            rangeA=100;
-        }
-        else if((RA>40.0)&&(RA<=50.0))
-        {
-            rangeA=125;
-        }
-        else if((RA>50.0)&&(RA<=60.0))
-        {
-            rangeA=150;
-        }
-        else if((RA>60.0)&&(RA<=70.0))
-        {
-            rangeA=175;
-        }
-        else if((RA>70.0)&&(RA<=80.0))
-        {
-            rangeA=200;
-        }
-        else if((RA>80.0)&&(RA<=90.0))
-        {
-            rangeA=225;
-        }
-        else if((RA>90.0)&&(RA<=100.0))
-        {
-            rangeA=250;
-        }
-*/
-        return rangeA;
-    }
-
-    public int rangesetB(float RB) {
-
-        if((RB>0.0)&&(RB<=20.0))
-        {
-            rangeB=50;
-            r1+=1; r2=0; r3=0; r4=0; r5=0;
-        }
-        else if((RB>20.0)&&(RB<=40.0))
-        {
-            rangeB=100;
-            r1=0; r2+=1; r3=0; r4=0; r5=0;
-        }
-        else if((RB>40.0)&&(RB<=60.0))
-        {
-            rangeB=150;
-            r1=0; r2=0; r3+=1; r4=0; r5=0;
-        }
-        else if((RB>60.0)&&(RB<=80.0))
-        {
-            rangeB=200;
-            r1=0; r2=0; r3=0; r4+=1; r5=0;
-        }
-        else if((RB>80.0)&&(RB<=100.0))
-        {
-            rangeB=250;
-            r1=0; r2=0; r3=0; r4=0; r5+=1;
-        }
-
-
-
-      /*  if((RB>0.0)&&(RB<=10.0))
-        {
-            rangeB=25;
-        }
-        else if((RB>10.0)&&(RB<=20.0))
-        {
-            rangeB=50;
-        }
-        else if((RB>20.0)&&(RB<=30.0))
-        {
-            rangeB=75;
-        }
-        else if((RB>30.0)&&(RB<=40.0))
-        {
-            rangeB=100;
-        }
-        else if((RB>40.0)&&(RB<=50.0))
-        {
-            rangeB=125;
-        }
-        else if((RB>50.0)&&(RB<=60.0))
-        {
-            rangeB=150;
-        }
-        else if((RB>60.0)&&(RB<=70.0))
-        {
-            rangeB=175;
-        }
-        else if((RB>70.0)&&(RB<=80.0))
-        {
-            rangeB=200;
-        }
-        else if((RB>80.0)&&(RB<=90.0))
-        {
-            rangeB=225;
-        }
-        else if((RB>90.0)&&(RB<=100.0))
-        {
-            rangeB=250;
-        }
-        */
-
-        return rangeB;
-    }
 
 
 
